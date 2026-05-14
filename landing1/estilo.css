@@ -74,8 +74,9 @@ body::before {
 }
 
 .main-logo {
-  width: min(74vw, 280px);
+  width: min(64vw, 242px);
   height: auto;
+  filter: invert(1);
 }
 
 .card {

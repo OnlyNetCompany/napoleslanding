@@ -216,95 +216,6 @@
     </div>
 
     <script>
-      // ── CONFIG (editar por cajero) ────────────────────────────
-      const META_PIXEL_ID = '1009162445294922';
-      const API_URL = 'https://app.onlynapoles.app/api/leads';
-      // ─────────────────────────────────────────────────────────
-
-      fbq('init', META_PIXEL_ID);
-      fbq('track', 'PageView');
-
-      function obtenerCookie(nombre) {
-        return document.cookie
-          .split('; ')
-          .find((c) => c.startsWith(nombre + '='))
-          ?.split('=')[1];
-      }
-
-      const urlParams = new URLSearchParams(window.location.search);
-
-      const fbclid = urlParams.get('fbclid');
-      if (fbclid) {
-        const fbc = `fb.1.${Date.now()}.${fbclid}`;
-        document.cookie = `_fbc=${fbc}; path=/; max-age=7776000`; // 90 días
-      }
-
-      function persistUtmContent(value) {
-        if (!value) return;
-        try {
-          sessionStorage.setItem('utm_content', value);
-        } catch {}
-        document.cookie = `utm_content=${encodeURIComponent(value)}; path=/; max-age=7776000`;
-      }
-
-      function resolveUtmContent() {
-        const fromUrl = (urlParams.get('utm_content') || '').trim();
-        if (fromUrl) return fromUrl;
-        try {
-          const fromSession = sessionStorage.getItem('utm_content');
-          if (fromSession) return fromSession;
-        } catch {}
-        const fromCookie = obtenerCookie('utm_content');
-        if (fromCookie) {
-          try {
-            return decodeURIComponent(fromCookie);
-          } catch {
-            return fromCookie;
-          }
-        }
-        return '';
-      }
-
-      persistUtmContent((urlParams.get('utm_content') || '').trim());
-
-      const mensajesAleatorios = () => [
-        `¡Hola! Vi el anuncio y quiero crear un usuario.`,
-        `Hola, quiero empezar a jugar. ¿Me pasás mi usuario?`,
-        `Hola, vengo por el anuncio para pedir mi cuenta.`,
-        `Hola, ¡díganme cómo cargar!`,
-        `Hola. Quiero un usuario.`,
-        `Hola, vi el anuncio y me interesa.`,
-        `Hola. Quiero mi usuario para empezar hoy.`,
-        `Hola. Vengo del anuncio y quiero empezar a jugar.`,
-        `Hola, ¡quiero mi usuario ahora!`,
-        `Hola, ¿me pueden dar información para comenzar?`,
-      ];
-
-      async function guardarLeadsYObtenerCodigoYNumero(fbc, fbp, adCode) {
-        const url = adCode
-          ? `${API_URL}?utm_content=${encodeURIComponent(adCode)}`
-          : API_URL;
-        const payload = {
-          fbc,
-          fbp,
-          userAgent: navigator.userAgent,
-          metaPixelId: META_PIXEL_ID,
-        };
-        if (adCode) payload.adCode = adCode;
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (response.status !== 201) {
-          throw new Error(`Lead create failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return { code: data.code, number: data.number };
-      }
-
       // ── Testimonials carousel (auto, sin controles) ─────────
       (function () {
         const track = document.getElementById('carouselTrack');
@@ -374,42 +285,7 @@
 
       setTimeout(showNextWin, 1500);
       setInterval(showNextWin, 5000);
-
-      const whatsappButton = document.getElementById('whatsappButton');
-
-      if (whatsappButton) {
-        whatsappButton.addEventListener('click', async function () {
-          try {
-            const fbp = obtenerCookie('_fbp') ?? null;
-            const fbc = obtenerCookie('_fbc') ?? null;
-            const adCode = resolveUtmContent();
-
-            const { code, number } = await guardarLeadsYObtenerCodigoYNumero(
-              fbc,
-              fbp,
-              adCode,
-            );
-
-            const opciones = mensajesAleatorios();
-            const mensajeBase =
-              opciones[Math.floor(Math.random() * opciones.length)];
-            const mensaje = code
-              ? `${mensajeBase} CODIGO:${code}`
-              : mensajeBase;
-
-            window.open(
-              `https://wa.me/${number}?text=${encodeURIComponent(mensaje)}`,
-              '_blank',
-            );
-          } catch (err) {
-            console.error('Lead create failed', err);
-            alert(
-              'No pudimos conectarte en este momento. Por favor, intentá de nuevo en unos segundos.',
-            );
-          }
-        });
-      }
     </script>
-    <script src="https://app.onlyganamos.app/embed/68a97e17-6115-414e-9783-39abcc8bafbd.js" data-cta-mode="boton-flotante" async></script>
+    <script src="https://app.onlynapoles.app/embed/a30173a0-e4d1-4ad0-af35-f635737fc7b9.js" data-cta-mode="solo-logica" async></script>
   </body>
 </html>
